@@ -1,6 +1,6 @@
 CREATE TABLE friendships (
-    id             SERIAL     PRIMARY KEY,
-    user1_id       INT        NOT NULL   REFERENCES users(id),
-    user2_id       INT        NOT NULL   REFERENCES users(id),
-    created        TIMESTAMP  NOT NULL
+    id              SERIAL     PRIMARY KEY,
+    user_from_id    INT        NOT NULL   REFERENCES users(id),
+    user_to_id      INT        NOT NULL   REFERENCES users(id),
+    created         TIMESTAMP  NOT NULL
 );

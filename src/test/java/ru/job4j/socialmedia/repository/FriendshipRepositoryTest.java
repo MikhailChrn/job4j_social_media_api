@@ -64,23 +64,22 @@ class FriendshipRepositoryTest {
         List.of(user4, user2, user5, user1, user3)
                 .forEach(user -> userRepository.save(user));
 
-        Friendship friendship1 = Friendship.builder().user1(user2)
-                .user2(user5).created(now).build();
-        Friendship friendship2 = Friendship.builder().user1(user4)
-                .user2(user3).created(now).build();
-        Friendship friendship3 = Friendship.builder().user1(user1)
-                .user2(user2).created(now).build();
+        Friendship friendship1 = Friendship.builder().userFrom(user2)
+                .userTo(user5).created(now).build();
+        Friendship friendship2 = Friendship.builder().userFrom(user4)
+                .userTo(user3).created(now).build();
+        Friendship friendship3 = Friendship.builder().userFrom(user1)
+                .userTo(user2).created(now).build();
         List.of(friendship2, friendship1, friendship3)
                 .forEach(friendship -> friendshipRepository.save(friendship));
 
-        Collection<Friendship> friendshipAfterRepository =
-                (Collection<Friendship>) friendshipRepository.findAll();
+        Collection<Friendship> friendshipAfterRepository = friendshipRepository.findAll();
 
         assertEquals(friendshipAfterRepository.size(), 3);
         assertTrue(friendshipAfterRepository
                 .containsAll(List.of(friendship2, friendship3, friendship1)));
 
-        assertEquals(friendshipRepository.findById(friendship2.getId()).get().getUser2(),
+        assertEquals(friendshipRepository.findById(friendship2.getId()).get().getUserTo(),
                 user3);
     }
 }

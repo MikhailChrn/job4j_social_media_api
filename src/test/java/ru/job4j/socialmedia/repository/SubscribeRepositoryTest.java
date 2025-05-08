@@ -59,21 +59,20 @@ class SubscribeRepositoryTest {
                 .forEach(user -> userRepository.save(user));
 
         Subscribe subscribe1 = Subscribe.builder().userFrom(userFrom)
-                .subscribeTo(subscribeToUser).created(now).build();
+                .subscribeUserTo(subscribeToUser).created(now).build();
         Subscribe subscribe2 = Subscribe.builder().userFrom(subscribeToUser)
-                .subscribeTo(userFrom).created(now).build();
+                .subscribeUserTo(userFrom).created(now).build();
 
         List.of(subscribe2, subscribe1)
                 .forEach(subscribe -> subscribeRepository.save(subscribe));
 
-        Collection<Subscribe> subscribesAfterRepository =
-                (Collection<Subscribe>) subscribeRepository.findAll();
+        Collection<Subscribe> subscribesAfterRepository = subscribeRepository.findAll();
 
         assertEquals(subscribesAfterRepository.size(), 2);
         assertTrue(subscribesAfterRepository
                 .containsAll(List.of(subscribe1, subscribe2)));
 
-        assertEquals(subscribeRepository.findById(subscribe2.getId()).get().getSubscribeTo(),
+        assertEquals(subscribeRepository.findById(subscribe2.getId()).get().getSubscribeUserTo(),
                 userFrom);
     }
 }

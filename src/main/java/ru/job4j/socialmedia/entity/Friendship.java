@@ -20,13 +20,13 @@ public class Friendship {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "user1_id")
-    private User user1;
+    @JoinColumn(name = "user_from_id")
+    private User userFrom;
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "user2_id")
-    private User user2;
+    @JoinColumn(name = "user_to_id")
+    private User userTo;
 
     @NonNull
     private LocalDateTime created;

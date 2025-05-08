@@ -26,7 +26,7 @@ public class Subscribe {
     @NonNull
     @ManyToOne
     @JoinColumn(name = "subscribe_id")
-    private User subscribeTo;
+    private User subscribeUserTo;
 
     @NonNull
     private LocalDateTime created;

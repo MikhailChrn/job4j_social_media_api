@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -31,4 +33,25 @@ public class Post {
     @NonNull
     private LocalDateTime created;
 
+    /**
+     * Файлы с фотографиями автомобиля
+     */
+    @OneToMany
+    private Set<File> files = new HashSet<>();
+
+    public void addFile(File file) {
+        file.setPost(this);
+        this.files.add(file);
+    }
+
+    public void removeFile(File file) {
+        file.setPost(null);
+        this.files.remove(file);
+    }
+
+    public Post(@NonNull User user, @NonNull String title, @NonNull LocalDateTime created) {
+        this.user = user;
+        this.title = title;
+        this.created = created;
+    }
 }

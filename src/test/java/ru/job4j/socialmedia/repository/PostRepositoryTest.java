@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ class PostRepositoryTest {
 
         Collection<Post> expected = List.of(post1, post2, post3);
 
-        Collection<Post> postRepositoryResponse = (Collection<Post>) postRepository.findAll();
+        Collection<Post> postRepositoryResponse = postRepository.findAll();
 
         assertEquals(postRepositoryResponse.size(), expected.size());
         assertTrue(postRepositoryResponse.containsAll(expected));
@@ -128,10 +129,8 @@ class PostRepositoryTest {
         Collection<Post> listOfUserTwo = List.of(post4, post2, post1);
         Collection<Post> listOfUserOne = List.of(post3);
 
-        Collection<Post> postRepositoryResponseOne = (Collection<Post>)
-                postRepository.findByUser(userOne);
-        Collection<Post> postRepositoryResponseTwo = (Collection<Post>)
-                postRepository.findByUser(userTwo);
+        Collection<Post> postRepositoryResponseOne = postRepository.findByUser(userOne);
+        Collection<Post> postRepositoryResponseTwo = postRepository.findByUser(userTwo);
 
         assertEquals(postRepositoryResponseOne.size(), listOfUserOne.size());
         assertTrue(postRepositoryResponseOne.containsAll(listOfUserOne));
@@ -141,8 +140,6 @@ class PostRepositoryTest {
 
     @Test
     public void whenGetListPostsBetweenTwoDatesThenGetEntities() {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
-
         List<LocalDateTime> dates = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
             dates.add(LocalDateTime.of(2024, month, 1, 0, 0));
@@ -157,17 +154,15 @@ class PostRepositoryTest {
                 Post.builder().user(user).title("title")
                         .created(date).build()));
 
-        Collection<Post> postRepositoryResponse = postRepository.findByCreatedGreaterThanEqualAndCreatedLessThanEqual
-                        (LocalDateTime.of(2024, 2, 15, 0, 0),
-                                LocalDateTime.of(2024, 8, 15, 0, 0));
+        Collection<Post> postRepositoryResponse = postRepository.findByCreatedGreaterThanEqualAndCreatedLessThanEqual(
+                LocalDateTime.of(2024, 2, 15, 0, 0),
+                LocalDateTime.of(2024, 8, 15, 0, 0));
 
         assertEquals(postRepositoryResponse.size(), 6);
     }
 
     @Test
     public void whenGetListPostsUsingPageThenGetPageWithEntities() {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
-
         List<LocalDateTime> dates = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
             dates.add(LocalDateTime.of(2024, month, 1, 0, 0));
@@ -183,11 +178,63 @@ class PostRepositoryTest {
                         .created(date).build()));
 
         Page<Post> postRepositoryResponse =
-                postRepository.findByOrderByCreatedDesc(PageRequest.of(2, 2));
+                postRepository.findALLOrderByCreatedDesc(PageRequest.of(2, 2));
 
         assertEquals(postRepositoryResponse.getSize(), 2);
 
         assertThat(postRepositoryResponse.stream().findFirst().get().getCreated())
                 .isEqualTo(LocalDateTime.of(2024, 8, 1, 0, 0));
+    }
+
+    @Test
+    public void whenUpdatePostTitleAndContentByIdThenGetSuccess() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+
+        User user = User.builder().email("One@user")
+                .password("pass").build();
+        userRepository.save(user);
+
+        Post postBefore = Post.builder().created(now)
+                .title("title before")
+                .content("content before")
+                .user(user).build();
+        postRepository.save(postBefore);
+
+        Post postAfter = Post.builder()
+                .id(postBefore.getId())
+                .created(postBefore.getCreated())
+                .title("title after")
+                .content("content after")
+                .user(postBefore.getUser()).build();
+        int count = postRepository.updateTitleAndContentById(postAfter.getId(),
+                postAfter.getTitle(),
+                postAfter.getContent());
+
+        assertEquals(count, 1);
+        assertEquals(postRepository.findById(postBefore.getId()).get(), postAfter);
+        assertEquals(postRepository.findById(postBefore.getId()).get().getContent(),
+                postAfter.getContent());
+    }
+
+    @Test
+    public void whenDeletePostByIdThenGetSeccussResult() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+
+        User user = User.builder().email("One@user")
+                .password("pass").build();
+        userRepository.save(user);
+
+        Post post = Post.builder().created(now)
+                .title("title")
+                .content("content")
+                .user(user).build();
+        postRepository.save(post);
+
+        assertEquals(postRepository.findById(post.getId()).get().getTitle(), "title");
+
+        int count = postRepository.deleteById(post.getId());
+
+        assertEquals(count, 1);
+        assertTrue(postRepository.findById(post.getId()).isEmpty());
     }
 }

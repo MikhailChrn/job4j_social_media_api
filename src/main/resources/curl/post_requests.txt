@@ -1,0 +1,31 @@
+Создать публикацию
+==============================================
+
+! Сначала создаём пользователя !
+
+curl -i -H "Content-Type:application/json" \
+-X POST \
+-d "{
+        \"email\":\"em1\",
+        \"password\":\"pass1\"
+    }" \
+http://localhost:8080/api/user
+
+Далее публикацию
+
+curl -i -H "Content-Type:application/json" \
+-X POST \
+-d "{
+        \"userShortDto\":{
+            \"email\":\"em1\",
+            \"password\":\"pass1\"
+        },
+        \"title\":\"title1\",
+        \"content\":\"content1\"
+    }" \
+http://localhost:8080/api/post
+
+Получение публикацию по ID
+==============================================
+
+curl -i http://localhost:8080/api/post/1

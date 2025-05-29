@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.job4j.socialmedia.entity.User;
 
+/**
+ * DTO for {@link ru.job4j.socialmedia.entity.Post}
+ */
 @Data
 @Builder
 @AllArgsConstructor

@@ -3,15 +3,20 @@ package ru.job4j.socialmedia.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.job4j.socialmedia.dto.PostCreateDto;
+import ru.job4j.socialmedia.dto.PostShortDto;
+import ru.job4j.socialmedia.dto.PostFullDto;
 import ru.job4j.socialmedia.dto.PostUpdateDto;
 import ru.job4j.socialmedia.entity.File;
 import ru.job4j.socialmedia.entity.Post;
+import ru.job4j.socialmedia.entity.User;
+import ru.job4j.socialmedia.mapper.PostMapper;
 import ru.job4j.socialmedia.repository.FileRepository;
 import ru.job4j.socialmedia.repository.PostRepository;
+import ru.job4j.socialmedia.repository.UserRepository;
 import ru.job4j.socialmedia.service.PostService;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -22,20 +27,41 @@ public class RegularPostService implements PostService {
 
     private FileRepository fileRepository;
 
+    private PostMapper postMapper;
+
+    private final UserRepository userRepository;
+
+    /**
+     * Получаем представление публикации по ID.
+     */
+    @Override
+    public Optional<PostFullDto> findById(Integer postId) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if (optionalPost.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(postMapper
+                .getDtoFromEntity(optionalPost.get()));
+    }
+
     /**
      * Добавляем новый пост на основании данных пользователя
      */
     @Transactional
     @Override
-    public boolean add(PostCreateDto dto) {
+    public Optional<PostFullDto> save(PostShortDto dto) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
         Post post = Post.builder()
-                .user(dto.getUser())
+                .user(
+                        userRepository.findByEmailAndPassword(
+                                dto.getUserShortDto().getEmail(),
+                                dto.getUserShortDto().getPassword()).get())
                 .title(dto.getTitle())
                 .content(dto.getContent())
-                .created(LocalDateTime.now())
+                .created(now)
                 .build();
         postRepository.save(post);
-        return post.getId() != 0;
+        return Optional.of(postMapper.getDtoFromEntity(post));
     }
 
     /**
@@ -90,4 +116,5 @@ public class RegularPostService implements PostService {
         fileRepository.delete(optionalFile.get());
         return true;
     }
+
 }

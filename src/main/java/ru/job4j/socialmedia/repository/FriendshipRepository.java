@@ -22,7 +22,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
     @Query(value = """
             SELECT *
             FROM friendships f
-            WHERE s.user_from_id = :id
+            WHERE f.user_from_id = :id
             """, nativeQuery = true)
     Collection<Friendship> findByUserFrom(@Param("id") int userFromId);
 

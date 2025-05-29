@@ -4,18 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.job4j.socialmedia.entity.User;
 
+/**
+ * DTO for {@link ru.job4j.socialmedia.entity.Post}
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostCreateDto {
+public class PostShortDto {
 
-    private User user;
+    UserShortDto userShortDto;
 
-    private String title;
+    String title;
 
-    private String content;
+    String content;
 
 }

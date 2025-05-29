@@ -1,9 +1,10 @@
 package ru.job4j.socialmedia.repository;
 
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.socialmedia.entity.User;
 
 import java.util.Collection;
@@ -39,4 +40,24 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                 WHERE f.user_from_id = :id)
             """, nativeQuery = true)
     Collection<User> findAllFriendsByUserId(@Param("id") int userId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = """
+            UPDATE users u
+            SET u.email = :#{#user.email},
+            u.password = :#{#user.password}
+            WHERE u.id = :#{#user.id}
+            """, nativeQuery = true)
+    int update(@Param("user") User user);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = """
+            DELETE
+            FROM users u
+            WHERE u.id = :id
+            """, nativeQuery = true)
+    int deleteById(@Param("id") int userId);
+
 }

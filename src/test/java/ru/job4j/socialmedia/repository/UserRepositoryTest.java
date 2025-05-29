@@ -182,4 +182,34 @@ public class UserRepositoryTest {
         assertEquals(userRepositoryResponseFive.size(), listOfUserFive.size());
         assertTrue(userRepositoryResponseFive.containsAll(listOfUserFive));
     }
+
+    @Test
+    void whenCreateThenUpdateEntity() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+        User userBefore = User.builder().email("Before@Email")
+                .password("pass")
+                .create(now).build();
+        userRepository.save(userBefore);
+        User userUpdated = User.builder().id(userBefore.getId())
+                .email("After@Email")
+                .password(userBefore.getPassword())
+                .create(userBefore.getCreate()).build();
+        assertEquals(userRepository.update(userUpdated), 1);
+        User userAfter = userRepository.findById(userBefore.getId()).get();
+        assertEquals(userUpdated.getEmail(), userAfter.getEmail());
+    }
+
+    @Test
+    void whenDeleteThenGetSuccess() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+        User user = User.builder().email("Email@Email")
+                .password("pass")
+                .create(now).build();
+        userRepository.save(user);
+        int id = user.getId();
+        User userFounded = userRepository.findById(user.getId()).get();
+        assertEquals(userFounded, user);
+        userRepository.deleteById(id);
+        assertTrue(userRepository.findById(id).isEmpty());
+    }
 }

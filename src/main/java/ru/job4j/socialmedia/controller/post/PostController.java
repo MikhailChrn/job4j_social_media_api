@@ -24,6 +24,9 @@ public class PostController {
 
     private final PostService postService;
 
+    /**
+     * @return 'ResponseEntity::ok' или 'ResponseEntity.notFound()'
+     */
     @GetMapping("/{postId}")
     public ResponseEntity<PostFullDto> get(@PathVariable("postId")
                                            @NotNull
@@ -35,6 +38,9 @@ public class PostController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * @return 'HttpStatus.CREATED'
+     */
     @PostMapping
     public ResponseEntity<PostFullDto> save(@RequestBody PostShortDto shortDto) {
         PostFullDto fullDto = postService.save(shortDto).get();
@@ -50,9 +56,11 @@ public class PostController {
 
     /**
      * PUT требует полное дублирование
-     * всех полей объекта вместе c измененным:
+     * всех полей объекта вместе c изменённым:
      * непродублированные поля будут затёрты !
      * Этот метод ведёт себя как "присваивание".
+     *
+     * @return 'ResponseEntity.ok()' или 'ResponseEntity.notFound()'
      */
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody PostUpdateDto dto) {
@@ -65,6 +73,8 @@ public class PostController {
     /**
      * PATCH предоставляет возможность отправить несколько полей,
      * будет произведено слияние.
+     *
+     * @return 'HttpStatus.OK'
      */
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
@@ -72,6 +82,9 @@ public class PostController {
         postService.update(dto);
     }
 
+    /**
+     * @return 'ResponseEntity.noContent()' или 'HttpStatus.NOT_FOUND'
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeById(@PathVariable int id) {
         if (postService.deleteById(id)) {

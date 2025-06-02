@@ -18,6 +18,9 @@ public class UsersController {
 
     private final UserService userService;
 
+    /**
+     * @return 'HttpStatus.OK'
+     */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Collection<UserShortDto> getAll() {

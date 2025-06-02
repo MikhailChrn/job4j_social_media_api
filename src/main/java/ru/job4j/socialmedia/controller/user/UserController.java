@@ -25,6 +25,9 @@ public class UserController {
 
     private UserService userService;
 
+    /**
+     * @return 'ResponseEntity::ok' или 'ResponseEntity.notFound()'
+     */
     @GetMapping("/{userId}")
     public ResponseEntity<UserFullDto> get(@PathVariable("userId")
                                     @NotNull
@@ -35,6 +38,9 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * @return 'HttpStatus.CREATED'
+     */
     @PostMapping
     public ResponseEntity<UserFullDto> save(@RequestBody UserShortDto shortDto) {
         UserFullDto fullDto = userService.save(shortDto).get();
@@ -52,11 +58,14 @@ public class UserController {
      * PUT требует полного дублирования всех полей объекта вместе c измененным:
      * непродублированные поля будут затёрты !
      * Этот метод ведёт себя как присваивание.
+     *
+     * @return 'ResponseEntity::ok' или 'ResponseEntity.notFound()'
      */
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody UserUpdateDto dto) {
         if (userService.update(dto)) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok()
+                    .build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -64,6 +73,8 @@ public class UserController {
     /**
      * PATCH предоставляет возможность отправить несколько полей,
      * будет произведено слияние.
+     *
+     * @return 'ResponseEntity.noContent()' или 'HttpStatus.NOT_FOUND'
      */
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)

@@ -1,6 +1,7 @@
 package ru.job4j.socialmedia.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,17 +21,17 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NonNull
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NonNull
+    @NotNull
     private String title;
 
     private String content;
 
-    @NonNull
+    @NotNull
     private LocalDateTime created;
 
     /**

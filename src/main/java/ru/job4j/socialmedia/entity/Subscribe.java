@@ -1,6 +1,7 @@
 package ru.job4j.socialmedia.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,17 +19,17 @@ public class Subscribe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NonNull
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userFrom;
 
-    @NonNull
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "subscribe_id")
     private User subscribeUserTo;
 
-    @NonNull
+    @NotNull
     private LocalDateTime created;
 
 }

@@ -237,4 +237,29 @@ class PostRepositoryTest {
         assertEquals(count, 1);
         assertTrue(postRepository.findById(post.getId()).isEmpty());
     }
+
+    @Test
+    public void whenFindPostByListOfUsers() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+
+        User user1 = User.builder().email("One@user").password("pass").build();
+        User user2 = User.builder().email("Two@user").password("pass").build();
+        User user3 = User.builder().email("Three@user").password("pass").build();
+        List.of(user3, user2, user1).forEach(userRepository::save);
+
+        Post post1 = Post.builder().created(now).title("example1").user(user3).build();
+        Post post2 = Post.builder().created(now).title("example2").user(user3).build();
+        Post post3 = Post.builder().created(now).title("example3").user(user1).build();
+        Post post4 = Post.builder().created(now).title("example4").user(user3).build();
+        List.of(post3, post1, post4, post2).forEach(postRepository::save);
+
+        assertEquals(postRepository.findByUserIdIn(List.of(user2.getId())).size(), 0);
+
+        assertEquals(postRepository.findByUserIdIn(List.of(user1.getId())).size(), 1);
+        assertTrue(postRepository.findByUserIdIn(List.of(user1.getId())).containsAll(List.of(post3)));
+
+        assertEquals(postRepository.findByUserIdIn(List.of(user3.getId())).size(), 3);
+        assertTrue(postRepository.findByUserIdIn(List.of(user3.getId()))
+                .containsAll(List.of(post4, post2, post1)));
+    }
 }

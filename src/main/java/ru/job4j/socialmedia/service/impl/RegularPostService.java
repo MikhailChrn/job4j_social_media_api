@@ -8,7 +8,6 @@ import ru.job4j.socialmedia.dto.PostFullDto;
 import ru.job4j.socialmedia.dto.PostUpdateDto;
 import ru.job4j.socialmedia.entity.File;
 import ru.job4j.socialmedia.entity.Post;
-import ru.job4j.socialmedia.entity.User;
 import ru.job4j.socialmedia.mapper.PostMapper;
 import ru.job4j.socialmedia.repository.FileRepository;
 import ru.job4j.socialmedia.repository.PostRepository;
@@ -17,7 +16,11 @@ import ru.job4j.socialmedia.service.PostService;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -117,4 +120,10 @@ public class RegularPostService implements PostService {
         return true;
     }
 
+    @Override
+    public Collection<PostShortDto> getPostsByUserIdIn(Collection<Integer> idUsers) {
+        return postRepository.findByUserIdIn(idUsers).stream()
+                .map(postMapper::getShortDtoFromEntity)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
 }

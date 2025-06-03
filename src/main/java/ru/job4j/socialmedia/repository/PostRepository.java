@@ -47,4 +47,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             """, nativeQuery = true)
     int deleteById(@Param("id") int id);
 
+    Collection<Post> findByUserIdIn(Collection<Integer> userIds);
 }

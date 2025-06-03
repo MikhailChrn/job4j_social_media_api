@@ -5,6 +5,7 @@ import ru.job4j.socialmedia.dto.PostFullDto;
 import ru.job4j.socialmedia.dto.PostUpdateDto;
 import ru.job4j.socialmedia.entity.File;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface PostService {
@@ -20,5 +21,7 @@ public interface PostService {
     boolean addFileToPostById(int id, File file);
 
     boolean removeFileFromPostById(int postId, int fileId);
+
+    Collection<PostShortDto> getPostsByUserIdIn(Collection<Integer> idUsers);
 
 }

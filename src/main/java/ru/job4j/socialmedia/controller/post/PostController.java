@@ -42,7 +42,7 @@ public class PostController {
      * @return 'HttpStatus.CREATED'
      */
     @PostMapping
-    public ResponseEntity<PostFullDto> save(@RequestBody PostShortDto shortDto) {
+    public ResponseEntity<PostFullDto> save(@Validated @RequestBody PostShortDto shortDto) {
         PostFullDto fullDto = postService.save(shortDto).get();
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -55,7 +55,7 @@ public class PostController {
     }
 
     /**
-     * PUT требует полное дублирование
+     * PUT обычно требует полное дублирование
      * всех полей объекта вместе c изменённым:
      * непродублированные поля будут затёрты !
      * Этот метод ведёт себя как "присваивание".
@@ -63,7 +63,7 @@ public class PostController {
      * @return 'ResponseEntity.ok()' или 'ResponseEntity.notFound()'
      */
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody PostUpdateDto dto) {
+    public ResponseEntity<Void> update(@Validated @RequestBody PostUpdateDto dto) {
         if (postService.update(dto)) {
             return ResponseEntity.ok().build();
         }
@@ -71,14 +71,14 @@ public class PostController {
     }
 
     /**
-     * PATCH предоставляет возможность отправить несколько полей,
+     * PATCH обычно предоставляет возможность отправить несколько полей,
      * будет произведено слияние.
      *
      * @return 'HttpStatus.OK'
      */
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public void change(@RequestBody PostUpdateDto dto) {
+    public void change(@Validated @RequestBody PostUpdateDto dto) {
         postService.update(dto);
     }
 

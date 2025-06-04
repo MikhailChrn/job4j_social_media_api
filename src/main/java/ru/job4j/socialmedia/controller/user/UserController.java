@@ -42,7 +42,7 @@ public class UserController {
      * @return 'HttpStatus.CREATED'
      */
     @PostMapping
-    public ResponseEntity<UserFullDto> save(@RequestBody UserShortDto shortDto) {
+    public ResponseEntity<UserFullDto> save(@Validated @RequestBody UserShortDto shortDto) {
         UserFullDto fullDto = userService.save(shortDto).get();
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -55,14 +55,14 @@ public class UserController {
     }
 
     /**
-     * PUT требует полного дублирования всех полей объекта вместе c измененным:
+     * PUT обычно требует полного дублирования всех полей объекта вместе c измененным:
      * непродублированные поля будут затёрты !
      * Этот метод ведёт себя как присваивание.
      *
      * @return 'ResponseEntity::ok' или 'ResponseEntity.notFound()'
      */
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody UserUpdateDto dto) {
+    public ResponseEntity<Void> update(@Validated @RequestBody UserUpdateDto dto) {
         if (userService.update(dto)) {
             return ResponseEntity.ok()
                     .build();
@@ -71,14 +71,14 @@ public class UserController {
     }
 
     /**
-     * PATCH предоставляет возможность отправить несколько полей,
+     * PATCH обычно предоставляет возможность отправить несколько полей,
      * будет произведено слияние.
      *
      * @return 'ResponseEntity.noContent()' или 'HttpStatus.NOT_FOUND'
      */
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public void change(@RequestBody UserUpdateDto dto) {
+    public void change(@Validated @RequestBody UserUpdateDto dto) {
         userService.update(dto);
     }
 

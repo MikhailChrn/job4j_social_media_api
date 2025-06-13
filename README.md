@@ -53,7 +53,7 @@
 ### Используемые технологии:
 
 + Java 17
-+ Thymeleaf
++ REST API
 + Spring Boot
 + Spring Security
 
